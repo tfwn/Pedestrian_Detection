@@ -1,0 +1,11 @@
+﻿  2_train_main.cpp
+d:\work\git\pedestrian_detection\my_svm.h(20): warning C4244: “return”: 从“double”转换到“float”，可能丢失数据
+d:\work\git\pedestrian_detection\2_train_main.cpp(49): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+d:\work\git\pedestrian_detection\2_train_main.cpp(50): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+d:\work\git\pedestrian_detection\2_train_main.cpp(153): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+d:\work\git\pedestrian_detection\2_train_main.cpp(161): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+d:\work\git\pedestrian_detection\2_train_main.cpp(750): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/PROFILE”规范)
+2_train_main.obj : warning LNK4075: 忽略“/EDITANDCONTINUE”(由于“/OPT:LBR”规范)
+  Pedestrian_Detection.vcxproj -> D:\work\git\Pedestrian_Detection\vs\Pedestrian_Detection\x64\Debug\Pedestrian_Detection.exe
+  Pedestrian_Detection.vcxproj -> D:\work\git\Pedestrian_Detection\vs\Pedestrian_Detection\x64\Debug\Pedestrian_Detection.pdb (Full PDB)
