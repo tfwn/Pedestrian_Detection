@@ -8,8 +8,9 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/ml/ml.hpp>
+#include "dataset.h"
 
-#define INRIANegativeImageList "D:\\work\\git\\Pedestrian_Detection\\INRIANegativeImageList.txt" //原始负样本图片文件列表
+#define INRIANegativeImageList "D:\\work\\mygit\\Pedestrian_Detection\\INRIANegativeImageList.txt" //原始负样本图片文件列表
 //#define INRIANegativeImageList "INRIANegativeImageList.txt" //原始负样本图片文件列表
 
 using namespace std;
@@ -27,12 +28,12 @@ int main()
 	//ifstream fin("subset.txt");
 
 
-#ifdef train_image_64x128
+#if  ( (defined train_image_w64x128_b16x16_s8x8_cv) || (defined train_image_w64x128_b16x16_s16x16_cv) || (defined train_image_w64x128_b16x16_s16x16_mv) )
 	//一行一行读取文件列表
 	while(getline(fin,ImgName))
 	{
 		cout<<"处理："<<ImgName<<endl;
-		ImgName = "D:\\work\\git\\Pedestrian_Detection\\INRIAPerson\\Train\\neg\\" + ImgName;
+		ImgName = "D:\\work\\mygit\\Pedestrian_Detection\\INRIAPerson\\Train\\neg\\" + ImgName;
 		//ImgName = "INRIAPerson/Train/neg/" + ImgName;
 		src = imread(ImgName,1);//读取图片
 
@@ -51,7 +52,7 @@ int main()
 				int y = ( rand() % (src.rows-128) ); //左上角y坐标
 				//cout<<x<<","<<y<<endl;
 				Mat imgROI = src(Rect(x,y,64,128));
-				sprintf(saveName,"D:\\work\\git\\Pedestrian_Detection\\dataset\\neg\\noperson%06d.jpg",++CropImageCount);//生成裁剪出的负样本图片的文件名
+				sprintf(saveName,"D:\\work\\mygit\\Pedestrian_Detection\\dataset\\neg\\noperson%06d.jpg",++CropImageCount);//生成裁剪出的负样本图片的文件名
 				//sprintf(saveName,"dataset/neg/noperson%06d.jpg",++CropImageCount);//生成裁剪出的负样本图片的文件名
 				imwrite(saveName, imgROI);//保存文件
 			}
@@ -77,10 +78,10 @@ int main()
 			//从每张图片中随机裁剪10个64*128大小的不包含人的负样本
 			for (int i = 0; i<10; i++)
 			{
-				int x = (rand() % (src.cols - 32)); //左上角x坐标
-				int y = (rand() % (src.rows - 64)); //左上角y坐标
+				int x = (rand() % (src.cols - 64)); //左上角x坐标
+				int y = (rand() % (src.rows - 128)); //左上角y坐标
 				//cout<<x<<","<<y<<endl;
-				Mat imgROI = src(Rect(x, y, 32, 64));
+				Mat imgROI = src(Rect(x, y, 64, 128));
 				sprintf(saveName, "D:\\work\\git\\Pedestrian_Detection\\dataset\\neg\\noperson%06d.jpg", ++CropImageCount);//生成裁剪出的负样本图片的文件名
 				//sprintf(saveName,"dataset/neg/noperson%06d.jpg",++CropImageCount);//生成裁剪出的负样本图片的文件名
 				imwrite(saveName, imgROI);//保存文件

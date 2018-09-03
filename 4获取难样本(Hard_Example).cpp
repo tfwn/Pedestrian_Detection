@@ -16,13 +16,13 @@ int main(int argc, char** argv)
 	string ImgName;
 
 	char saveName[256];//找出来的HardExample图片文件名
-	ifstream fin("D:\\work\\git\\Pedestrian_Detection\\INRIANegativeImageList.txt");//打开原始负样本图片文件列表
+	ifstream fin("D:\\work\\mygit\\Pedestrian_Detection\\INRIANegativeImageList.txt");//打开原始负样本图片文件列表
 
   //检测窗口(64,128),块尺寸(16,16),块步长(8,8),cell尺寸(8,8),直方图bin个数9
 	//HOGDescriptor hog(Size(64,128),Size(16,16),Size(8,8),Size(8,8),9);//HOG检测器，用来计算HOG描述子的
 	int DescriptorDim;//HOG描述子的维数，由图片大小、检测窗口大小、块大小、细胞单元中直方图bin个数决定
 	MySVM svm;//SVM分类器
-  svm.load("D:\\work\\git\\Pedestrian_Detection\\SVM_HOG.xml");
+  svm.load("D:\\work\\mygit\\Pedestrian_Detection\\SVM_HOG.xml");
 
   /*************************************************************************************************
 	线性SVM训练完成后得到的XML文件里面，有一个数组，叫做support vector，还有一个数组，叫做alpha,有一个浮点数，叫做rho;
@@ -71,10 +71,14 @@ int main(int argc, char** argv)
 	myDetector.push_back(svm.get_rho());
 	cout<<"检测子维数："<<myDetector.size()<<endl;
 	//设置HOGDescriptor的检测子
-#ifdef train_image_64x128		
-	HOGDescriptor myHOG;
+#if (defined train_image_w64x128_b16x16_s8x8_cv)
+	HOGDescriptor myHOG(Size(64, 128), Size(16, 16), Size(8, 8), Size(8, 8), 9);//HOG检测器，用来计算HOG描述子的
+#else (defined train_image_w64x128_b16x16_s16x16_cv)
+	HOGDescriptor myHOG(Size(64, 128), Size(16, 16), Size(16, 16), Size(8, 8), 9);//HOG检测器，用来计算HOG描述子的
+#else (defined train_image_w64x128_b16x16_s16x16_mv)
+	HOGDescriptor myHOG(Size(64, 128), Size(16, 16), Size(16, 16), Size(8, 8), 9);//HOG检测器，用来计算HOG描述子的
 #else
-	HOGDescriptor myHOG(Size(32, 64), Size(16, 16), Size(8, 8), Size(8, 8), 9);//HOG检测器，用来计算HOG描述子的
+	HOGDescriptor myHOG;//HOG检测器，用来计算HOG描述子的
 #endif
 	myHOG.setSVMDetector(myDetector);
 	//myHOG.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
@@ -91,7 +95,7 @@ int main(int argc, char** argv)
   while(getline(fin,ImgName))
   {
     cout<<"处理："<<ImgName<<endl;
-    ImgName = "D:\\work\\git\\Pedestrian_Detection\\INRIAPerson\\Train\\neg\\" + ImgName;
+    ImgName = "D:\\work\\mygit\\Pedestrian_Detection\\INRIAPerson\\Train\\neg\\" + ImgName;
     src = imread(ImgName,1);//读取图片
 
       vector<Rect> found, found_filtered;
@@ -131,12 +135,17 @@ int main(int argc, char** argv)
           if(r.y + r.height > src.rows)
             r.height = src.rows - r.y;
           Mat imgROI = src(Rect(r.x, r.y, r.width, r.height));
-#ifdef train_image_64x128
+
+#if  ( (defined train_image_w64x128_b16x16_s8x8_cv) || (defined train_image_w64x128_b16x16_s16x16_cv) || (defined train_image_w64x128_b16x16_s16x16_mv) )
           resize(imgROI,imgROI,Size(64,128));
-#esle
-			resize(imgROI, imgROI, Size(32, 64));
+#else deinded train_image_w32x64
+			if (r.width < 32 || r.height < 64)
+			{
+				continue;
+			}
+		  resize(imgROI, imgROI, Size(32, 64));
 #endif
-		  sprintf(saveName,"D:\\work\\git\\Pedestrian_Detection\\dataset\\HardExample\\hardexample%06d.jpg",++HardExampleCount);
+		  sprintf(saveName,"D:\\work\\mygit\\Pedestrian_Detection\\dataset\\HardExample\\hardexample%06d.jpg",++HardExampleCount);
           imwrite(saveName,imgROI);
           //rectangle(src, r.tl(), r.br(), cv::Scalar(0,255,0), 3);
       }
